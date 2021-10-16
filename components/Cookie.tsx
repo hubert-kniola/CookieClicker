@@ -1,6 +1,7 @@
 import React, { Component, FC } from "react";
 import { View, TouchableOpacity, Text, StyleSheet, Image } from "react-native";
 import { StateFormat } from "../constants/const";
+import { Roboto_700Bold } from "@expo-google-fonts/dev";
 
 import cookie_png from "../assets/cookie.png";
 
@@ -28,37 +29,39 @@ export const CookieButton: FC<Props> = ({ gameState, addCookies }) => {
 const styles = StyleSheet.create({
   container: {
     textAlign: "center",
-    backgroundColor: "#1a1a1a",
+    backgroundColor: "#e7c28d",
   },
   number1: {
     textAlign: "center",
     fontSize: 30,
+    color: 'white',
+    fontFamily: Roboto_700Bold,
     paddingTop: 15,
-    backgroundColor: "#40ff00",
-    marginRight: 'auto',
-    marginLeft: 'auto',
-    width: '20%',
-    marginTop: 5,
+    backgroundColor: "#915c3a",
+    marginRight: "auto",
+    marginLeft: "auto",
+    width: 270,
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
   },
   number2: {
     textAlign: "center",
     fontSize: 30,
+    color: 'white',
+    fontFamily: Roboto_700Bold,
     paddingTop: 15,
-    backgroundColor: "#40ff00",
-    marginRight: 'auto',
-    marginLeft: 'auto',
-    width: '20%',
+    backgroundColor: "#915c3a",
+    marginRight: "auto",
+    marginLeft: "auto",
+    width: 270,
     paddingBottom: 10,
     borderBottomLeftRadius: 8,
     borderBottomRightRadius: 8,
   },
   cookie: {
-    width: "60%",
-    height: '26rem',
-    marginTop: 50,
-    marginLeft: 'auto',
-    marginRight: 'auto',
+    width: 320,
+    height: "20rem",
+    marginLeft: "auto",
+    marginRight: "auto",
   },
 });

@@ -2,15 +2,8 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Button, FlatList } from "react-native";
 import { CookieButton } from "../components/Cookie";
 import { Shop } from "../components/Shop";
-import shops_json from "../components/shop.json";
-import { StatusBar } from "expo-status-bar";
-
-type StateFormat = {
-  cookies: number;
-  cps: number;
-  amount_owned: number[];
-  shops: any;
-};
+import shops_json from "../data/shop.json";
+import { StateFormat, ItemFormat } from "../constants/const";
 
 export const Game = () => {
   const stateInit = {
@@ -37,11 +30,11 @@ export const Game = () => {
   };
 
   const buyFromShop = (cost: number) => {
-    for (let i = 0; i < gameState.shops.length; i++) {
+    gameState.shops.map((obj: ItemFormat, i: number) => {
       if (gameState.shops[i].cost === cost) {
-        editState("amount_owned", (state: any) => {
+        editState("amount_owned", (state: StateFormat) => {
           const amount_owned = state.amount_owned.map(
-            (item: any, j: number) => {
+            (item: number, j: number) => {
               if (j === i) {
                 return item + 1;
               } else {
@@ -53,11 +46,11 @@ export const Game = () => {
         });
         editState("cookies", gameState.cookies - cost);
       }
-    }
+    });
   };
 
   const calcCPS = () => {
-    let individual = gameState.shops.map((a: any) => {
+    let individual = gameState.shops.map((a: ItemFormat) => {
       const ind = a.clicks_per_second * gameState.amount_owned[a.id];
       return ind;
     });
@@ -69,9 +62,9 @@ export const Game = () => {
     addCookies(output);
   };
 
-  useEffect(() => {
+  /*useEffect(() => {
     setInterval(calcCPS, 6000);
-  }, []);
+  }, []);*/
 
   return (
     <View style={styles.container}>
@@ -83,6 +76,6 @@ export const Game = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: "#e7c28d",
   },
 });

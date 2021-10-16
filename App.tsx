@@ -13,7 +13,6 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: StatusBar.length,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#e7c28d',
   },
 });

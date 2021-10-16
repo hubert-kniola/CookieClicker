@@ -7,7 +7,8 @@ import {
   FlatList,
   Button,
 } from "react-native";
-import { StateFormat } from "../constants/const";
+import { StateFormat, ItemFormat } from "../constants/const";
+import { Roboto_700Bold } from "@expo-google-fonts/dev";
 
 type Props = {
     gameState: StateFormat;
@@ -73,24 +74,32 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
     textAlign: "center",
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#e7c28d',
   },
   text1: {
+    width: 250,
+    padding: 4,
     textAlign: "center",
     fontSize: 15,
-    backgroundColor: '#40ff00',
+    color: 'white',
+    fontFamily: Roboto_700Bold,
+    backgroundColor: '#915c3a',
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
-    marginRight: 700,
-    marginLeft: 700,
+    marginRight: 'auto',
+    marginLeft: 'auto',
   },
   text2: {
+    width: 250,
+    padding: 4,
     textAlign: "center",
     fontSize: 15,
-    backgroundColor: '#40ff00',
+    color: 'white',
+    fontFamily: Roboto_700Bold,
+    backgroundColor: '#915c3a',
     borderBottomLeftRadius: 8,
     borderBottomRightRadius: 8,
-    marginRight: 700,
-    marginLeft: 700,
+    marginRight: 'auto',
+    marginLeft: 'auto',
   },
 });
