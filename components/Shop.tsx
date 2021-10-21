@@ -60,7 +60,7 @@ export const ListItem: FC<ItemProps> = ({cost, cps, id, buy, amount_owned}) => {
     <TouchableOpacity onPress={() => buy(cost)}>
       <View style={styles.container}>
         <Text style={styles.text1}>
-          Koszt: {cost}, Clicks Per Second:{" "}
+          Koszt: {cost}, CPS:{" "}
           {cps}
         </Text>
         <Text style={styles.text2}>
@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: 'black',
     // fontFamily: Roboto_700Bold,
+    fontWeight: "bold",
     backgroundColor: '#fccf10',
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
@@ -97,10 +98,12 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: 'black',
     // fontFamily: Roboto_700Bold,
+    fontWeight: "bold",
     backgroundColor: '#fccf10',
     borderBottomLeftRadius: 8,
     borderBottomRightRadius: 8,
     marginRight: 'auto',
     marginLeft: 'auto',
+    marginBottom: 3,
   },
 });

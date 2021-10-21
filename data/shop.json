@@ -1,27 +1,17 @@
 [
     {
       "cost": 10,
-      "clicks_per_second": 0.1,
+      "clicks_per_second": 10,
       "id": 0
     },
     {
       "cost": 100,
-      "clicks_per_second": 1,
+      "clicks_per_second": 100,
       "id": 1
     },
     {
       "cost": 1000,
-      "clicks_per_second": 10,
-      "id": 2
-    },
-    {
-      "cost": 10000,
-      "clicks_per_second": 100,
-      "id": 3
-    },
-    {
-      "cost": 100000,
       "clicks_per_second": 1000,
-      "id": 4
+      "id": 2
     }
   ]

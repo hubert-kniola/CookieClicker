@@ -9,7 +9,7 @@ export const Game = () => {
   const stateInit = {
     cookies: 0,
     cps: 0,
-    amount_owned: [0, 0, 0, 0, 0],
+    amount_owned: [0, 0, 0],
     shops: shops_json,
   };
 
