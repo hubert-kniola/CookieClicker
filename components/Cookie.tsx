@@ -1,9 +1,7 @@
 import React, { Component, FC } from "react";
 import { View, TouchableOpacity, Text, StyleSheet, Image } from "react-native";
 import { StateFormat } from "../constants/const";
-import { Roboto_700Bold } from "@expo-google-fonts/dev";
-
-import cookie_png from "../assets/cookie.png";
+// import { Roboto_700Bold } from "@expo-google-fonts/dev";
 
 type Props = {
   gameState: StateFormat;
@@ -14,10 +12,10 @@ export const CookieButton: FC<Props> = ({ gameState, addCookies }) => {
   return (
     <View>
       <TouchableOpacity style={styles.container} onPress={() => addCookies(1)}>
-        <Image style={styles.cookie} source={cookie_png} />
+        <Image style={styles.cookie} source={require('./banana.png')} />
       </TouchableOpacity>
       <Text style={styles.number1}>
-        Cookies: {Math.round(gameState.cookies * 100) / 100}
+        Bananów: {Math.round(gameState.cookies * 100) / 100}
       </Text>
       <Text style={styles.number2}>
         CPS: {Math.round(gameState.cps * 100) / 100}
@@ -29,18 +27,23 @@ export const CookieButton: FC<Props> = ({ gameState, addCookies }) => {
 const styles = StyleSheet.create({
   container: {
     textAlign: "center",
-    backgroundColor: "#e7c28d",
+    backgroundColor: "#ffff99",
   },
   number1: {
     textAlign: "center",
     fontSize: 30,
     color: 'white',
-    fontFamily: Roboto_700Bold,
+    // fontFamily: Roboto_700Bold,
     paddingTop: 15,
-    backgroundColor: "#915c3a",
+    backgroundColor: "#000000",
     marginRight: "auto",
     marginLeft: "auto",
+    marginTop: 3,
     width: 270,
+    // borderWidth: 5,
+    // borderLeftColor: 'white',
+    // borderRightColor: 'white',
+    // borderTopColor: 'white',
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
   },
@@ -48,19 +51,25 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 30,
     color: 'white',
-    fontFamily: Roboto_700Bold,
-    paddingTop: 15,
-    backgroundColor: "#915c3a",
+    // fontFamily: Roboto_700Bold,
+    paddingTop: 8,
+    backgroundColor: "#000000",
     marginRight: "auto",
     marginLeft: "auto",
+    marginBottom: 5,
     width: 270,
     paddingBottom: 10,
+    // borderWidth: 5,
+    // borderLeftColor: 'white',
+    // borderRightColor: 'white',
+    // borderBottomColor: 'white',
     borderBottomLeftRadius: 8,
     borderBottomRightRadius: 8,
   },
   cookie: {
-    width: 320,
-    height: "20rem",
+    width: '75%',
+    height: 250,
+    marginTop: '7%',
     marginLeft: "auto",
     marginRight: "auto",
   },

@@ -8,7 +8,7 @@ import {
   Button,
 } from "react-native";
 import { StateFormat, ItemFormat } from "../constants/const";
-import { Roboto_700Bold } from "@expo-google-fonts/dev";
+
 
 type Props = {
     gameState: StateFormat;
@@ -22,7 +22,8 @@ export const Shop: FC<Props> = ({gameState, buyFromShop}) => {
   const buy = (cost: number) => {
     if (gameState.cookies > cost) {
         buyFromShop(cost);
-        changeRefresh();
+        console.log('buy:');
+        console.log(gameState);
     }
   };
 
@@ -72,18 +73,18 @@ export const ListItem: FC<ItemProps> = ({cost, cps, id, buy, amount_owned}) => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    padding: 4,
     textAlign: "center",
-    backgroundColor: '#e7c28d',
+    backgroundColor: '#ffff99',
   },
   text1: {
     width: 250,
-    padding: 4,
+    padding: 3,
     textAlign: "center",
     fontSize: 15,
-    color: 'white',
-    fontFamily: Roboto_700Bold,
-    backgroundColor: '#915c3a',
+    color: 'black',
+    // fontFamily: Roboto_700Bold,
+    backgroundColor: '#fccf10',
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
     marginRight: 'auto',
@@ -91,12 +92,12 @@ const styles = StyleSheet.create({
   },
   text2: {
     width: 250,
-    padding: 4,
+    padding: 3,
     textAlign: "center",
     fontSize: 15,
-    color: 'white',
-    fontFamily: Roboto_700Bold,
-    backgroundColor: '#915c3a',
+    color: 'black',
+    // fontFamily: Roboto_700Bold,
+    backgroundColor: '#fccf10',
     borderBottomLeftRadius: 8,
     borderBottomRightRadius: 8,
     marginRight: 'auto',
