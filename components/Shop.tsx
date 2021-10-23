@@ -6,24 +6,20 @@ import {
   StyleSheet,
   FlatList,
   Button,
+  useWindowDimensions,
+  Pressable,
 } from "react-native";
 import { StateFormat, ItemFormat } from "../constants/const";
 
-
 type Props = {
-    gameState: StateFormat;
-    buyFromShop: (cost: number) => void;
+  gameState: StateFormat;
+  buyFromShop: (cost: number) => void;
 };
 
-export const Shop: FC<Props> = ({gameState, buyFromShop}) => {
-  const [refresh, setRefresh] = useState<boolean>(false);
-  const changeRefresh = () => setRefresh(!refresh);
-
+export const Shop: FC<Props> = ({ gameState, buyFromShop }) => {
   const buy = (cost: number) => {
     if (gameState.cookies > cost) {
-        buyFromShop(cost);
-        console.log('buy:');
-        console.log(gameState);
+      buyFromShop(cost);
     }
   };
 
@@ -31,7 +27,6 @@ export const Shop: FC<Props> = ({gameState, buyFromShop}) => {
     <View>
       <FlatList
         data={gameState.shops}
-        extraData={refresh}
         keyExtractor={(item) => item.cost}
         renderItem={({ item }) => (
           <ListItem
@@ -39,7 +34,7 @@ export const Shop: FC<Props> = ({gameState, buyFromShop}) => {
             cps={item.clicks_per_second}
             id={item.id}
             buy={buy}
-            amount_owned={gameState.amount_owned}
+            amountOwned={gameState.amountOwned}
           />
         )}
       />
@@ -48,62 +43,107 @@ export const Shop: FC<Props> = ({gameState, buyFromShop}) => {
 };
 
 type ItemProps = {
-    cost: number;
-    cps: number;
-    id: number;
-    buy: (cost: number) =>void;
-    amount_owned: any;
+  cost: number;
+  cps: number;
+  id: number;
+  buy: (cost: number) => void;
+  amountOwned: number[];
 };
 
-export const ListItem: FC<ItemProps> = ({cost, cps, id, buy, amount_owned}) => {
+export const ListItem: FC<ItemProps> = ({
+  cost,
+  cps,
+  id,
+  buy,
+  amountOwned,
+}) => {
+  const [isDisabled, setIsDisabled] = useState(false);
+  const { width, height } = useWindowDimensions();
   return (
-    <TouchableOpacity onPress={() => buy(cost)}>
-      <View style={styles.container}>
-        <Text style={styles.text1}>
-          Koszt: {cost}, CPS:{" "}
-          {cps}
+    <TouchableOpacity activeOpacity={isDisabled ? 1 : 0.5} onPress={() => buy(cost)}>
+      <View style={styles(width, height, isDisabled).container}>
+        <Text style={styles(width, height, isDisabled).text1}>
+          Koszt: {cost}, CPS: {cps}
         </Text>
-        <Text style={styles.text2}>
-          Kupionych: {amount_owned[id]}
+        <Text style={styles(width, height, isDisabled).text2}>
+          Kupionych: {amountOwned[id]}
         </Text>
       </View>
     </TouchableOpacity>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 4,
-    textAlign: "center",
-    backgroundColor: '#ffff99',
-  },
-  text1: {
-    width: 250,
-    padding: 3,
-    textAlign: "center",
-    fontSize: 15,
-    color: 'black',
-    // fontFamily: Roboto_700Bold,
-    fontWeight: "bold",
-    backgroundColor: '#fccf10',
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-    marginRight: 'auto',
-    marginLeft: 'auto',
-  },
-  text2: {
-    width: 250,
-    padding: 3,
-    textAlign: "center",
-    fontSize: 15,
-    color: 'black',
-    // fontFamily: Roboto_700Bold,
-    fontWeight: "bold",
-    backgroundColor: '#fccf10',
-    borderBottomLeftRadius: 8,
-    borderBottomRightRadius: 8,
-    marginRight: 'auto',
-    marginLeft: 'auto',
-    marginBottom: 3,
-  },
-});
+const styles = (width: number, height: number, isDisabled: boolean) =>
+  StyleSheet.create({
+    container: {
+      padding: 2,
+      flex: 2,
+      textAlign: "center",
+      backgroundColor: "#ffff99",
+      marginTop: 0.02 * height,
+    },
+    text1: isDisabled
+      ? {
+          width: 0.5 * width,
+          padding: 3,
+          textAlign: "center",
+          fontSize: 15,
+          color: "black",
+          // fontFamily: Roboto_700Bold,
+          fontWeight: "bold",
+          backgroundColor: "#b19102",
+          borderTopLeftRadius: 15,
+          borderTopRightRadius: 15,
+          marginRight: "auto",
+          marginLeft: "auto",
+        }
+      : {
+          width: 0.5 * width,
+          paddingTop: 3,
+          textAlign: "center",
+          fontSize: 15,
+          color: "black",
+          borderWidth: 4,
+          borderTopColor: 'black',
+          borderLeftColor: 'black',
+          borderRightColor: 'black',
+          borderBottomColor: '#fccf10',
+          // fontFamily: Roboto_700Bold,
+          fontWeight: "bold",
+          backgroundColor: "#fccf10",
+          borderTopLeftRadius: 15,
+          borderTopRightRadius: 15,
+          marginRight: "auto",
+          marginLeft: "auto",
+        },
+    text2: isDisabled
+      ? {
+          width: 0.5 * width,
+          padding: 3,
+          textAlign: "center",
+          fontSize: 15,
+          color: "black",
+          // fontFamily: Roboto_700Bold,
+          fontWeight: "bold",
+          backgroundColor: "#b19102",
+          borderBottomLeftRadius: 15,
+          borderBottomRightRadius: 15,
+          marginRight: "auto",
+          marginLeft: "auto",
+          marginBottom: 2,
+        }
+      : {
+          width: 0.5 * width,
+          paddingBottom: 1,
+          textAlign: "center",
+          fontSize: 15,
+          color: "black",
+          // fontFamily: Roboto_700Bold,
+          fontWeight: "bold",
+          backgroundColor: "#fccf10",
+          borderBottomLeftRadius: 15,
+          borderBottomRightRadius: 15,
+          marginRight: "auto",
+          marginLeft: "auto",
+        },
+  });

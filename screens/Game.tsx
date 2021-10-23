@@ -1,88 +1,164 @@
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Button, FlatList, ScrollView  } from "react-native";
+import React, { useEffect, useState, FC, useCallback } from "react";
+import {
+  View,
+  StyleSheet,
+  Pressable,
+  Text,
+  useWindowDimensions,
+  Modal,
+} from "react-native";
 import { CookieButton } from "../components/Cookie";
 import { Shop } from "../components/Shop";
-import shops_json from "../data/shop.json";
 import { StateFormat, ItemFormat } from "../constants/const";
+import { stateInit } from "../constants/const";
+import {
+  AdMobBanner,
+  AdMobRewarded,
+} from "expo-ads-admob";
+
+type ButtonProps = {
+  setGameState: (x: StateFormat) => void;
+  title: string;
+};
+
+const Button: FC<ButtonProps> = ({ setGameState, title }) => {
+  const { width, height } = useWindowDimensions();
+  return (
+    <Pressable
+      style={styles(width, height).button}
+      onPress={() => setGameState(stateInit)}
+    >
+      <Text style={styles(width, height).text}>{title}</Text>
+    </Pressable>
+  );
+};
 
 export const Game = () => {
-  const stateInit = {
-    cookies: 0,
-    cps: 0,
-    amount_owned: [0, 0, 0],
-    shops: shops_json,
+  const androidBannerId = "ca-app-pub-3121452947741059/2364429643";
+  const { width, height } = useWindowDimensions();
+  const [gameState, setGameState] = useState<StateFormat>(stateInit);
+  const initRewardAds = async () => {
+    await AdMobRewarded.setAdUnitID("ca-app-pub-3940256099942544/6300978111");
+    await AdMobRewarded.requestAdAsync();
+    await AdMobRewarded.showAdAsync();
   };
 
-  const [gameState, setGameState] = useState<StateFormat>(stateInit);
+  const addCookies = (value: number, cps: number, amount: number) => {
+    setGameState({
+      ...gameState,
+      cookies: gameState.cookies + value + cps * amount,
+    });
+  };
 
-   const addCookies = (value: number) => {
-     setGameState({
-       ...gameState,
-       cookies: gameState.cookies + value,
-     });
-     console.log(gameState);
-   };
+  const addCPS = (value: number) => {
+    setGameState({
+      ...gameState,
+      cps: gameState.cps + value,
+    });
+  };
 
-   const editState = (key: string, value: any) => {
-     console.log(gameState);
-     setGameState({
-       ...gameState,
-       [key]: value,
-     });
-     console.log(gameState);
-   };
+  const incrementAmountOwned = (value: number[]) => {
+    gameState.amountOwned = value;
+    setGameState({
+      ...gameState,
+    });
+  };
 
-   const buyFromShop = (cost: number) => {
-     gameState.shops.map((obj: ItemFormat, i: number) => {
-       if (gameState.shops[i].cost === cost) {
-         console.log(gameState.shops[i]);
-         console.log(cost);
-         editState("amount_owned", (state: StateFormat) => {
-           const amount_owned = state.amount_owned.map(
-             (item: number, j: number) => {
-               if (j === i) {
-                 return item + 1;
-               } else {
-                 return item;
-               }
-             }
-           );
-           return { amount_owned };
-         });
-         editState("cookies", gameState.cookies - cost);
-       }
-     });
-   };
+  const overrideCookies = (value: number) => {
+    gameState.cookies = value;
+    setGameState({
+      ...gameState,
+    });
+  };
 
-   const calcCPS = () => {
-     let individual = gameState.shops.map((a: ItemFormat) => {
-       const ind = a.clicks_per_second * gameState.amount_owned[a.id];
-       return ind;
-     });
-     let output = 0;
-     individual.map((i: number) => {
-       output += i;
-     });
-     editState("cps", output);
-     addCookies(output);
-     console.log('cps:');
-     console.log(gameState);
-   };
+  const editNumber = (state: StateFormat, i: number) => {
+    return state.amountOwned.map((item: number, j: number) => {
+      if (j === i) {
+        return item + 1;
+      } else {
+        return item;
+      }
+    });
+  };
 
-  // useEffect(() => {
-  //    setInterval(calcCPS, 6000);
-  //  }, []);
+  const buyFromShop = (cost: number) => {
+    gameState.shops.map((obj: StateFormat, i: number) => {
+      if (parseInt(gameState.shops[i].cost) === cost) {
+        incrementAmountOwned(editNumber(gameState, i));
+        overrideCookies(gameState.cookies - cost);
+        addCPS(gameState.shops[i].clicks_per_second);
+      }
+    });
+  };
+
+  const calcCPS = () => {
+    let individual = gameState.shops.map((a: ItemFormat) => {
+      const ind = a.clicks_per_second * gameState.amountOwned[a.id];
+      return ind;
+    });
+    let output = 0;
+    individual.map((i: number) => {
+      output += i;
+    });
+    //editState("cps", output);
+    //addCookies(output);
+  };
+
+  //useEffect(() => {
+  //    //setInterval(calcCPS, 1000);
+  // }, []);
 
   return (
-    <View style={styles.container}>
-      <CookieButton gameState={gameState} addCookies={addCookies}/>
+    <View style={styles(width, height).container}>
+      <AdMobBanner
+        style={styles(width, height).banner}
+        bannerSize="fullBanner"
+        adUnitID={"ca-app-pub-3940256099942544/6300978111"}
+        servePersonalizedAds={false}
+      />
+      <Button title={"Nowa Gra"} setGameState={setGameState}></Button>
+      <CookieButton gameState={gameState} addCookies={addCookies} />
       <Shop gameState={gameState} buyFromShop={buyFromShop} />
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#ffff99",
-  },
-});
+const styles = (width: number, height: number) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: "#ffff99",
+      height: height,
+      width: width,
+    },
+    button: {
+      width: 0.2 * width,
+      height: 0.05 * height,
+      padding: 2,
+      textAlign: "center",
+      justifyContent: "center",
+      fontSize: 6,
+      color: "black",
+      fontWeight: "bold",
+      backgroundColor: "#fccf10",
+      borderRadius: 15,
+      marginRight: "auto",
+      marginTop: 0.005 * height,
+      marginLeft: 0.04 * width,
+      borderWidth: 3,
+      borderTopColor: "black",
+      borderLeftColor: "black",
+      borderRightColor: "black",
+      borderBottomColor: "transparent",
+    },
+    banner: {
+      width:'100%',
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    text: {
+      color: "black",
+      fontWeight: "bold",
+      marginLeft: "auto",
+      marginRight: "auto",
+    },
+  });

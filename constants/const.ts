@@ -1,7 +1,9 @@
+import shops_json from "../data/shop.json";
+
 export type StateFormat = {
     cookies: number,
     cps: number,
-    amount_owned: number[],
+    amountOwned: number[],
     shops: any,
 };
 
@@ -9,4 +11,11 @@ export type ItemFormat = {
     cost: number,
     clicks_per_second:number,
     id: number,
+};
+
+export const stateInit = {
+    cookies: 0,
+    cps: 0,
+    amountOwned: [0, 0, 0],
+    shops: shops_json,
 };
