@@ -91,7 +91,7 @@ export const Game = () => {
     });
   };
 
-  const calcCPS = () => {
+  const calculateCPS = () => {
     let individual = gameState.shops.map((a: ItemFormat) => {
       const ind = a.clicks_per_second * gameState.amountOwned[a.id];
       return ind;
@@ -100,8 +100,8 @@ export const Game = () => {
     individual.map((i: number) => {
       output += i;
     });
-    //editState("cps", output);
-    //addCookies(output);
+    addCPS(output);
+    addCookies(output, 0, 0);
   };
 
   //useEffect(() => {
@@ -113,7 +113,7 @@ export const Game = () => {
       <AdMobBanner
         style={styles(width, height).banner}
         bannerSize="fullBanner"
-        adUnitID={"ca-app-pub-3940256099942544/6300978111"}
+        adUnitID={androidBannerId}
         servePersonalizedAds={false}
       />
       <Button title={"Nowa Gra"} setGameState={setGameState}></Button>
@@ -151,7 +151,7 @@ const styles = (width: number, height: number) =>
       borderBottomColor: "transparent",
     },
     banner: {
-      width:'100%',
+      width: width,
       justifyContent: "center",
       alignItems: "center",
     },
