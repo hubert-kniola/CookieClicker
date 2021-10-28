@@ -47,7 +47,7 @@ const styles = (width: number, height: number) =>
     },
     number1: {
       textAlign: "center",
-      fontSize: 30,
+      fontSize: 20,
       color: "white",
       // fontFamily: Roboto_700Bold,
       paddingTop: 15,
@@ -67,7 +67,7 @@ const styles = (width: number, height: number) =>
     },
     number2: {
       textAlign: "center",
-      fontSize: 30,
+      fontSize: 20,
       color: "white",
       // fontFamily: Roboto_700Bold,
       paddingTop: 0.01 * height,
@@ -85,7 +85,7 @@ const styles = (width: number, height: number) =>
     cookie: {
       width: 0.9 * width,
       height: 0.5 * height,
-      marginTop: -0.07 * height,
+      marginTop: -0.09 * height,
       marginLeft: "auto",
       marginRight: "auto",
     },

@@ -11,22 +11,19 @@ import { CookieButton } from "../components/Cookie";
 import { Shop } from "../components/Shop";
 import { StateFormat, ItemFormat } from "../constants/const";
 import { stateInit } from "../constants/const";
-import {
-  AdMobBanner,
-  AdMobRewarded,
-} from "expo-ads-admob";
+import { AdMobBanner, AdMobRewarded, AdMobInterstitial } from "expo-ads-admob";
 
 type ButtonProps = {
-  setGameState: (x: StateFormat) => void;
+  onPress: (x?: any) => void;
   title: string;
 };
 
-const Button: FC<ButtonProps> = ({ setGameState, title }) => {
+const Button: FC<ButtonProps> = ({ onPress, title }) => {
   const { width, height } = useWindowDimensions();
   return (
     <Pressable
       style={styles(width, height).button}
-      onPress={() => setGameState(stateInit)}
+      onPress={() => onPress(stateInit)}
     >
       <Text style={styles(width, height).text}>{title}</Text>
     </Pressable>
@@ -34,14 +31,12 @@ const Button: FC<ButtonProps> = ({ setGameState, title }) => {
 };
 
 export const Game = () => {
-  const androidBannerId = "ca-app-pub-3121452947741059/2364429643";
+  const androidBannerId = "ca-app-pub-3940256099942544/6300978111";
+  const androidInterId = "ca-app-pub-3940256099942544/8691691433";
+  const androidRewardedId = "ca-app-pub-3940256099942544/5224354917";
   const { width, height } = useWindowDimensions();
   const [gameState, setGameState] = useState<StateFormat>(stateInit);
-  const initRewardAds = async () => {
-    await AdMobRewarded.setAdUnitID("ca-app-pub-3940256099942544/6300978111");
-    await AdMobRewarded.requestAdAsync();
-    await AdMobRewarded.showAdAsync();
-  };
+  const [isLoadedReward, setIsLoadedReward] = useState<boolean>(false);
 
   const addCookies = (value: number, cps: number, amount: number) => {
     setGameState({
@@ -104,9 +99,63 @@ export const Game = () => {
     addCookies(output, 0, 0);
   };
 
-  //useEffect(() => {
-  //    //setInterval(calcCPS, 1000);
-  // }, []);
+  useEffect(() => {
+    //setInterval(calcCPS, 1000);
+    const initInterAds = setInterval(async () => {
+      try {
+        AdMobInterstitial.setAdUnitID(androidInterId);
+        await AdMobInterstitial.requestAdAsync({
+          servePersonalizedAds: false,
+        });
+        await AdMobInterstitial.showAdAsync();
+      } catch {
+        (e: any) => console.log(e);
+      }
+    }, 46000);
+
+    const initRewardAds = async () => {
+      try {
+        await AdMobRewarded.setAdUnitID(androidRewardedId);
+
+        AdMobRewarded.addEventListener("rewardedVideoDidLoad", () =>
+          console.log("Loaded")
+        );
+        AdMobRewarded.addEventListener("rewardedVideoDidFailToLoad", () =>
+          console.log("FailedToLoad")
+        );
+        AdMobRewarded.addEventListener("rewardedVideoUserDidEarnReward", () => {
+          console.log("Rewarded");
+        });
+        AdMobRewarded.addEventListener("rewardedVideoDidPresent", () => {
+          console.log("Presented");
+        });
+        AdMobRewarded.addEventListener("rewardedVideoDidFailToPresent", () =>
+          console.log("FailedToPresent")
+        );
+        AdMobRewarded.addEventListener("rewardedVideoDidDismiss", () => {
+          console.log("Dismissed");
+          addCPS(1000);
+        });
+      } catch {
+        (e: any) => console.log(e.message);
+      }
+    };
+
+    initRewardAds();
+    return () => {
+      clearInterval(initInterAds);
+      AdMobRewarded.removeAllListeners();
+    };
+  }, []);
+
+  const pressToGetReward = async () => {
+    try {
+      AdMobRewarded.requestAdAsync();
+      AdMobRewarded.showAdAsync();
+    } catch {
+      (e: any) => console.log(e.message);
+    }
+  };
 
   return (
     <View style={styles(width, height).container}>
@@ -116,7 +165,8 @@ export const Game = () => {
         adUnitID={androidBannerId}
         servePersonalizedAds={false}
       />
-      <Button title={"Nowa Gra"} setGameState={setGameState}></Button>
+      <Button title={"Nowa Gra"} onPress={setGameState} />
+      <Button title={"Nagroda"} onPress={pressToGetReward} />
       <CookieButton gameState={gameState} addCookies={addCookies} />
       <Shop gameState={gameState} buyFromShop={buyFromShop} />
     </View>
@@ -142,12 +192,12 @@ const styles = (width: number, height: number) =>
       backgroundColor: "#fccf10",
       borderRadius: 15,
       marginRight: "auto",
-      marginTop: 0.005 * height,
+      marginTop: 0.009 * height,
       marginLeft: 0.04 * width,
       borderWidth: 3,
       borderTopColor: "black",
-      borderLeftColor: "black",
-      borderRightColor: "black",
+      borderLeftColor: "transparent",
+      borderRightColor: "transparent",
       borderBottomColor: "transparent",
     },
     banner: {
