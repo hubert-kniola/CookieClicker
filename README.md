@@ -10,14 +10,14 @@
 
 ## Images:
 
-<p align="left" width="10%">
-  <img src="images/Screen1.jpg" title="Result">
+<p align="left">
+  <img src="images/Screen1.jpg" width="10%" title="Result">
 </p>
 
-<p align="center" width="10%">
-  <img src="images/Screen2.jpg" title="Result">
+<p align="center">
+  <img src="images/Screen2.jpg" width="10%" title="Result">
 </p>
 
-<p align="right" width="10%">
-  <img src="images/Screen3.jpg" title="Result">
+<p align="right">
+  <img src="images/Screen3.jpg" width="10%" title="Result">
 </p>
