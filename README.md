@@ -11,7 +11,7 @@
 ## Images:
 
 <p align="left">
-  <img src="images/Screen1.jpg" width="25%" title="Result">
-  <img src="images/Screen2.jpg" width="25%" title="Result">
-  <img src="images/Screen3.jpg" width="25%" title="Result">
+  <img src="images/Screen1.jpg" width="30%" title="Result">
+  <img src="images/Screen2.jpg" width="30%" title="Result">
+  <img src="images/Screen3.jpg" width="30%" title="Result">
 </p>
