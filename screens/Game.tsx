@@ -18,7 +18,10 @@ type ButtonProps = {
   title: string;
 };
 
-const Button: FC<ButtonProps> = ({ onPress, title }) => {
+const Button: FC<ButtonProps> = ({
+  onPress,
+  title,
+}) => {
   const { width, height } = useWindowDimensions();
   return (
     <Pressable
@@ -36,7 +39,9 @@ export const Game = () => {
   const androidRewardedId = "ca-app-pub-3940256099942544/5224354917";
   const { width, height } = useWindowDimensions();
   const [gameState, setGameState] = useState<StateFormat>(stateInit);
-  const [isLoadedReward, setIsLoadedReward] = useState<boolean>(false);
+  const [isButtonBlocked, setIsButtonBlocked] = useState<boolean | undefined>(
+    false
+  );
 
   const addCookies = (value: number, cps: number, amount: number) => {
     setGameState({
@@ -117,9 +122,9 @@ export const Game = () => {
       try {
         await AdMobRewarded.setAdUnitID(androidRewardedId);
 
-        AdMobRewarded.addEventListener("rewardedVideoDidLoad", () =>
-          console.log("Loaded")
-        );
+        AdMobRewarded.addEventListener("rewardedVideoDidLoad", () => {
+          console.log("Loaded");
+        });
         AdMobRewarded.addEventListener("rewardedVideoDidFailToLoad", () =>
           console.log("FailedToLoad")
         );
@@ -134,7 +139,6 @@ export const Game = () => {
         );
         AdMobRewarded.addEventListener("rewardedVideoDidDismiss", () => {
           console.log("Dismissed");
-          addCPS(1000);
         });
       } catch {
         (e: any) => console.log(e.message);
@@ -150,8 +154,10 @@ export const Game = () => {
 
   const pressToGetReward = async () => {
     try {
-      AdMobRewarded.requestAdAsync();
-      AdMobRewarded.showAdAsync();
+      addCPS(1000);
+      await AdMobRewarded.requestAdAsync();
+      await AdMobRewarded.showAdAsync();
+      setIsButtonBlocked(true);
     } catch {
       (e: any) => console.log(e.message);
     }
@@ -165,8 +171,14 @@ export const Game = () => {
         adUnitID={androidBannerId}
         servePersonalizedAds={false}
       />
-      <Button title={"Nowa Gra"} onPress={setGameState} />
-      <Button title={"Nagroda"} onPress={pressToGetReward} />
+      <Button
+        title={"Nowa Gra"}
+        onPress={setGameState}
+      />
+      <Button
+        title={"Nagroda"}
+        onPress={pressToGetReward}
+      />
       <CookieButton gameState={gameState} addCookies={addCookies} />
       <Shop gameState={gameState} buyFromShop={buyFromShop} />
     </View>
