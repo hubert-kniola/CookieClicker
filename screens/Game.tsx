@@ -50,6 +50,7 @@ export const Game = () => {
     });
   };
 
+
   const addCPS = (value: number) => {
     setGameState({
       ...gameState,
@@ -139,6 +140,7 @@ export const Game = () => {
         );
         AdMobRewarded.addEventListener("rewardedVideoDidDismiss", () => {
           console.log("Dismissed");
+          addCPS(1000);
         });
       } catch {
         (e: any) => console.log(e.message);
@@ -150,14 +152,14 @@ export const Game = () => {
       clearInterval(initInterAds);
       AdMobRewarded.removeAllListeners();
     };
-  }, []);
+  }, [gameState]);
 
   const pressToGetReward = async () => {
     try {
-      addCPS(1000);
+      //addCPS(1000);
       await AdMobRewarded.requestAdAsync();
       await AdMobRewarded.showAdAsync();
-      setIsButtonBlocked(true);
+      //setIsButtonBlocked(true);
     } catch {
       (e: any) => console.log(e.message);
     }
