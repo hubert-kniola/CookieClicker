@@ -27,7 +27,7 @@ export const Shop: FC<Props> = ({ gameState, buyFromShop }) => {
     <View>
       <FlatList
         data={gameState.shops}
-        keyExtractor={(item) => item.cost}
+        keyExtractor={(item) => item.cost.toString()}
         renderItem={({ item }) => (
           <ListItem
             cost={item.cost}
