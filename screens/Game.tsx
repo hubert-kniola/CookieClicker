@@ -18,10 +18,7 @@ type ButtonProps = {
   title: string;
 };
 
-const Button: FC<ButtonProps> = ({
-  onPress,
-  title,
-}) => {
+const Button: FC<ButtonProps> = ({ onPress, title }) => {
   const { width, height } = useWindowDimensions();
   return (
     <Pressable
@@ -49,7 +46,6 @@ export const Game = () => {
       cookies: gameState.cookies + value + cps * amount,
     });
   };
-
 
   const addCPS = (value: number) => {
     setGameState({
@@ -106,7 +102,6 @@ export const Game = () => {
   };
 
   useEffect(() => {
-    //setInterval(calcCPS, 1000);
     const initInterAds = setInterval(async () => {
       try {
         AdMobInterstitial.setAdUnitID(androidInterId);
@@ -117,8 +112,15 @@ export const Game = () => {
       } catch {
         (e: any) => console.log(e);
       }
-    }, 46000);
+    }, 26000);
 
+    return () => {
+      clearInterval(initInterAds);
+    };
+  }, []);
+
+  useEffect(() => {
+    //setInterval(calcCPS, 1000);
     const initRewardAds = async () => {
       try {
         await AdMobRewarded.setAdUnitID(androidRewardedId);
@@ -149,7 +151,6 @@ export const Game = () => {
 
     initRewardAds();
     return () => {
-      clearInterval(initInterAds);
       AdMobRewarded.removeAllListeners();
     };
   }, [gameState]);
@@ -173,14 +174,8 @@ export const Game = () => {
         adUnitID={androidBannerId}
         servePersonalizedAds={false}
       />
-      <Button
-        title={"Nowa Gra"}
-        onPress={setGameState}
-      />
-      <Button
-        title={"Nagroda"}
-        onPress={pressToGetReward}
-      />
+      <Button title={"Nowa Gra"} onPress={setGameState} />
+      <Button title={"Nagroda"} onPress={pressToGetReward} />
       <CookieButton gameState={gameState} addCookies={addCookies} />
       <Shop gameState={gameState} buyFromShop={buyFromShop} />
     </View>
