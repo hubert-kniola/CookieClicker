@@ -36,9 +36,7 @@ export const Game = () => {
   const androidRewardedId = "ca-app-pub-3940256099942544/5224354917";
   const { width, height } = useWindowDimensions();
   const [gameState, setGameState] = useState<StateFormat>(stateInit);
-  const [isButtonBlocked, setIsButtonBlocked] = useState<boolean | undefined>(
-    false
-  );
+  const [modalVisible, setModalVisible] = useState(false);
 
   const addCookies = (value: number, cps: number, amount: number) => {
     setGameState({
@@ -112,7 +110,7 @@ export const Game = () => {
       } catch {
         (e: any) => console.log(e);
       }
-    }, 26000);
+    }, 50000);
 
     return () => {
       clearInterval(initInterAds);
@@ -133,6 +131,7 @@ export const Game = () => {
         );
         AdMobRewarded.addEventListener("rewardedVideoUserDidEarnReward", () => {
           console.log("Rewarded");
+          setModalVisible(false);
         });
         AdMobRewarded.addEventListener("rewardedVideoDidPresent", () => {
           console.log("Presented");
@@ -170,13 +169,45 @@ export const Game = () => {
     <View style={styles(width, height).container}>
       <AdMobBanner
         style={styles(width, height).banner}
-        bannerSize="fullBanner"
+        bannerSize="banner"
         adUnitID={androidBannerId}
         servePersonalizedAds={false}
       />
+      <View style={styles(width, height).buttonRowMain}>
       <Button title={"Nowa Gra"} onPress={setGameState} />
-      <Button title={"Nagroda"} onPress={pressToGetReward} />
+      <Button title={"Nagroda"} onPress={() => setModalVisible(true)} />
+      </View>
       <CookieButton gameState={gameState} addCookies={addCookies} />
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles(width, height).centeredView}>
+          <View style={styles(width, height).modalView}>
+            <Text style={styles(width, height).modalText}>
+              Czy chcesz obejrzeć reklamę w celu zdobycia dodatkowych kliknięć?
+            </Text>
+            <View style={styles(width, height).buttonRow}>
+              <Pressable
+                style={styles(width, height).button}
+                onPress={() => setModalVisible(!modalVisible)}
+              >
+                <Text style={styles(width, height).textStyle}>Nie chce</Text>
+              </Pressable>
+              <Pressable
+                style={styles(width, height).button}
+                onPress={() => pressToGetReward()}
+              >
+                <Text style={styles(width, height).textStyle}>Chętnie</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
       <Shop gameState={gameState} buyFromShop={buyFromShop} />
     </View>
   );
@@ -186,7 +217,7 @@ const styles = (width: number, height: number) =>
   StyleSheet.create({
     container: {
       backgroundColor: "#ffff99",
-      height: height,
+      height: height * 1.05,
       width: width,
     },
     button: {
@@ -200,7 +231,6 @@ const styles = (width: number, height: number) =>
       fontWeight: "bold",
       backgroundColor: "#fccf10",
       borderRadius: 15,
-      marginRight: "auto",
       marginTop: 0.009 * height,
       marginLeft: 0.04 * width,
       borderWidth: 3,
@@ -210,6 +240,8 @@ const styles = (width: number, height: number) =>
       borderBottomColor: "transparent",
     },
     banner: {
+      marginTop: 40,
+      marginBottom: 20,
       width: width,
       justifyContent: "center",
       alignItems: "center",
@@ -217,6 +249,50 @@ const styles = (width: number, height: number) =>
     text: {
       color: "black",
       fontWeight: "bold",
+      marginLeft: "auto",
+      marginRight: "auto",
+    },
+    centeredView: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      marginTop: 22,
+    },
+    modalView: {
+      margin: 20,
+      backgroundColor: "white",
+      borderRadius: 20,
+      padding: 35,
+      alignItems: "center",
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+      borderWidth: 3,
+      borderTopColor: "black",
+      borderLeftColor: "transparent",
+      borderRightColor: "transparent",
+      borderBottomColor: "transparent",
+    },
+    textStyle: {
+      color: "black",
+      fontWeight: "bold",
+      textAlign: "center",
+    },
+    modalText: {
+      marginBottom: 15,
+      textAlign: "center",
+    },
+    buttonRow: {
+      flexDirection: "row",
+    },
+    buttonRowMain: {
+      flexDirection: "row",
+      marginBottom: 5,
       marginLeft: "auto",
       marginRight: "auto",
     },

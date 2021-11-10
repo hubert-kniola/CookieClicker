@@ -1,4 +1,4 @@
-import React, { Component, FC } from "react";
+import React, { Component, FC, useState, useEffect } from "react";
 import {
   View,
   TouchableOpacity,
@@ -7,7 +7,7 @@ import {
   Image,
   useWindowDimensions,
 } from "react-native";
-import { StateFormat } from "../constants/const";
+import { StateFormat, rand, arrayObj } from "../constants/const";
 // import { Roboto_700Bold } from "@expo-google-fonts/dev";
 
 type Props = {
@@ -17,18 +17,64 @@ type Props = {
 
 export const CookieButton: FC<Props> = ({ gameState, addCookies }) => {
   const { width, height } = useWindowDimensions();
+  const [array, setArray] = useState(arrayObj);
+  const [row, setRow] = useState(rand());
+  const [cell, setCell] = useState(rand());
+  const [counter, setCounter] = useState(0);
+
+  const setActive = (row_ID: number, cell_ID: number) => {
+    if (row === row_ID && cell_ID === cell) {
+      addCookies(1, gameState.cps, 2);
+    }
+  };
+
+  useEffect(() => {
+    const i = setInterval(() => {
+      let row_ID = rand();
+      let cell_ID = rand();
+
+      while (row_ID === row && cell_ID === cell) {
+        row_ID = rand();
+        cell_ID = rand();
+      }
+
+      setRow(row_ID);
+      setCell(cell_ID);
+    }, 1000);
+
+    return () => clearInterval(i);
+  }, [row, cell]);
+
   return (
     <View>
-      <TouchableOpacity
-        activeOpacity={1}
-        style={styles(width, height).container}
-        onPress={() => addCookies(1, gameState.cps, 2)}
-      >
-        <Image
-          style={styles(width, height).cookie}
-          source={require("./banana.png")}
-        />
-      </TouchableOpacity>
+      <View style={styles(width, height).chessview}>
+        {array.map((item, row_ID) => {
+          return (
+            <View style={styles(width, height).row} key={row_ID}>
+              {item.map((obj, cell_ID) => {
+                return (
+                  <View key={cell_ID} style={styles(width, height).cellview}>
+                    {row_ID === row && cell_ID === cell ? (
+                      <TouchableOpacity
+                        activeOpacity={1}
+                        style={styles(width, height).container}
+                        onPress={() => setActive(row_ID, cell_ID)}
+                      >
+                        <Image
+                          style={styles(width, height).cookie}
+                          source={require("./banana.png")}
+                        />
+                      </TouchableOpacity>
+                    ) : (
+                      <></>
+                    )}
+                  </View>
+                );
+              })}
+            </View>
+          );
+        })}
+      </View>
       <Text style={styles(width, height).number1}>
         Bananów: {Math.round(gameState.cookies * 100) / 100}
       </Text>
@@ -42,8 +88,7 @@ export const CookieButton: FC<Props> = ({ gameState, addCookies }) => {
 const styles = (width: number, height: number) =>
   StyleSheet.create({
     container: {
-      textAlign: "center",
-      backgroundColor: "#ffff99",
+      backgroundColor: "transparent",
     },
     number1: {
       textAlign: "center",
@@ -83,10 +128,36 @@ const styles = (width: number, height: number) =>
       borderBottomRightRadius: 22,
     },
     cookie: {
-      width: 0.9 * width,
-      height: 0.5 * height,
-      marginTop: -0.09 * height,
+      width: 0.2 * width,
+      height: 0.1 * height,
+    },
+    row: {
+      width: 0.7 * width,
+      flexDirection: "row",
+      justifyContent: "space-around",
+      height: 80,
       marginLeft: "auto",
       marginRight: "auto",
+      borderColor: "white",
+      borderWidth: 3,
+      borderRadius: 5,
+    },
+    chessview: {
+      alignItems: 'center',
+      flex: 1,
+      width: 40,
+      height: 40,
+      marginBottom: 300,
+      marginTop: 10,
+      marginLeft: 0.15 * width,
+    },
+    cellview: {
+      flex: 1,
+      width: 65,
+      height: 75,
+      backgroundColor: "black",
+      borderLeftWidth: 3,
+      borderColor: "white",
+      borderRadius: 5,
     },
   });
